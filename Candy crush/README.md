@@ -47,6 +47,7 @@ python m.py Inputs Outputs 10 60
   - [x] checking if a state could result in a goal state or not
 - [x] table
 
+### Table for input 4
 
 | algorithm | solution length | cost | time | maximum number of nodes | total number of nodes
 | - | - | - | - | - | - |
@@ -64,8 +65,22 @@ python m.py Inputs Outputs 10 60
 | iterative deepening A* - second heuristic | 6 | 5.00 | 6.81 | 4738 | 6004 |
 | iterative deepening A* - invalid heuristic | 6 | 5.00 | 6.71 | 4738 | 6004 |
 
+### Table for input 3
+
+| algorithm | solution length | cost | time | maximum number of nodes | total number of nodes
+| - | - | - | - | - | - |
+| uniform cost search | 5 | 4.75 | 0.09 | 159 | 210 |
+| A* - obvious heuristic | 5 | 4.75 | 0.11 | 294 | 210 |
+| A* - first heuristic | 7 | 6.56 | 0.41 | 367 | 402 |
+| A* - second heuristic | 5 | 4.75 | 0.03 | 294 | 66 |
+| A* - invalid heuristic | 6 | 6.08 | 0.03 | 294 | 75 |
+| optimized A* - obvious heuristic | 5 | 4.50 | 0.10 | 108 | 178 |
+| optimized A* - first heuristic | 5 | 4.50 | 0.03 | 65 | 89 |
+| optimized A* - second heuristic | 5 | 4.50 | 0.16 | 99 | 160 |
+| optimized A* - invalid heuristic | 5 | 4.50 | 0.04 | 52 | 64 |
+| iterative deepening A* - obvious heuristic | 5 | 4.50 | 0.33 | 198 | 745 |
+| iterative deepening A* - first heuristic | 5 | 4.50 | 0.35 | 198 | 745 |
+| iterative deepening A* - second heuristic | 5 | 4.50 | 0.38 | 198 | 745 |
+| iterative deepening A* - invalid heuristic | 5 | 4.50 | 0.33 | 198 | 745 |
 
 
-
-
-- [ ] 
