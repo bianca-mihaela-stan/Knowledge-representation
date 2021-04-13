@@ -31,11 +31,10 @@ python m.py Inputs Outputs 10 60
   - [x] a file with small solution lengths
   - [x] a file that timeouts an algorithm
   - [x] at least one of these files should result in a subobtimal result for the invalid heuristic
-  ```
-  input4.in
-  second heuristic costs: 4.5 4.5 4.5 4.5 4.5 4.5 4.75 4.75 4.75 5.75
-  invalid heuristic costs: 4.5 5.75 6.25 6.25 6.25 4.5 4.5 6.0 6.0 6.0
-  ```
+    | A* with first heuristic | A* with invalid heuristic |
+    | - | - |
+    | 6.631578947368421 | 8.131578947368421 |
+
 - [x] for each solution output:
   - [ ] id of every node in solution
   - [x] solution length
@@ -51,19 +50,19 @@ python m.py Inputs Outputs 10 60
 
 | algorithm | solution length | cost | time | maximum number of nodes | total number of nodes
 | - | - | - | - | - | - |
-| uniform cost search | 4 | 3 | 0.003 | 5 | 9 |
-| A* - obvious heuristic | 4 | 3 | 0.003 | 5 | 7 |
-| A* - first heuristic | 4 | 3 | 0.004 | 5 | 6 |
-| A* - second heuristic | | | | | |
-| A* - invalid heuristic | | | | | |
-| optimized A* - obvious heuristic | 4 | 3 | 0.003 | 10 | 9 |
-| optimized A* - first heuristic | 4 | 3 | 0.003 | 10 | 9 |
-| optimized A* - second heuristic | | | | | |
-| optimized A* - invalid heuristic | | | | | |
-| iterative deepening A* - obvious heuristic | 4 | 3 | 0.006 | 6 | 18 |
-| iterative deepening A* - first heuristic | | | | | |
-| iterative deepening A* - second heuristic | | | | | |
-| iterative deepening A* - invalid heuristic | | | | | |
+| uniform cost search | 7 | 6.44 | 0.84 | 715 | 874 |
+| A* - obvious heuristic | 7 | 6.44 | 0.85 | 2028 | 874 |
+| A* - first heuristic | 11 | 12.83 | 0.57 | 2028 | 608 |
+| A* - second heuristic | 7 | 6.33 | 0.45 | 2028 | 443 |
+| A* - invalid heuristic | 10 | 11.33 | 0.27 | 2028 | 261 |
+| optimized A* - obvious heuristic | 6 | 5.00 | 1.90 | 1233 | 1592 |
+| optimized A* - first heuristic | 7 | 6.56 | 0.41 | 367 | 402 |
+| optimized A* - second heuristic | 6 | 5.00 | 0.78 | 588 | 741 |
+| optimized A* - invalid heuristic | 11 | 12.83 | 0.17 | 142 | 153 |
+| iterative deepening A* - obvious heuristic | 6 | 5.00 | 6.86 | 850 | 6004 |
+| iterative deepening A* - first heuristic | 6 | 5.00 | 8.52 | 4738 | 6004 |
+| iterative deepening A* - second heuristic | 6 | 5.00 | 6.81 | 4738 | 6004 |
+| iterative deepening A* - invalid heuristic | 6 | 5.00 | 6.71 | 4738 | 6004 |
 
 
 
