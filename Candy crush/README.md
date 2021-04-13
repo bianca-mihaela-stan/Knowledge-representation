@@ -29,11 +29,11 @@ python m.py Inputs Outputs 10 60
   - [x] a file with no solutions:
   - [x] a file where the initial state is also final
   - [x] a file with small solution lengths
-  - [x] a file that timeouts an algorithm
+  - [x] a file that timeouts an algorithm: `input4.in` timeouts on Iterative deepening A* when timeOut is set to 6s, but gives a solution for every other algorithm.
   - [x] at least one of these files should result in a subobtimal result for the invalid heuristic
-    | A* with first heuristic | A* with invalid heuristic |
+    | optimized A* with second heuristic | optimized A* with invalid heuristic |
     | - | - |
-    | 6.631578947368421 | 8.131578947368421 |
+    | 5 | 12.83 |
 
 - [x] for each solution output:
   - [ ] id of every node in solution
@@ -83,4 +83,7 @@ python m.py Inputs Outputs 10 60
 | iterative deepening A* - second heuristic | 5 | 4.50 | 0.38 | 198 | 745 |
 | iterative deepening A* - invalid heuristic | 5 | 4.50 | 0.33 | 198 | 745 |
 
-
+### Conclusions
+- A good heuristic can improve the cost of the first solution by 50% (A* invalid heuristic vs A* second heuristic).
+- IDA* seems to be the most consistent at finding the minimum possible cost, although it takes the longest time to do so and generates the most nodes. For the other algorithms, they rarely find the best solution first. 
+- When comparing A* with optimized A*, we can see consistent better results for optimized A* whilst the running times for both of them are comparable.
