@@ -8,18 +8,34 @@ python m.py Inputs Outputs 10 60
 - [x] Calculating the cost for a move as 1 + (N-K)/N, where N is the number of characters of the type we are removing and K is the number of characters we are removing through this move. 
 - [x] Testing to check if the goal state was reached.
 - [x] 4 heuristics:
-  - [x] **obvious heuristc**: 
+  - [x] **simple heuristc**: 
   ```
   h = 1 if state is non terminal
   h = 0 if state is terminal
   ```
+  Although simple, this heuristic is valid because the cost of a move ranges between \[1,2). Beacause of this, the cost of the solution cannot be less than 1, so the heuristic is valid.
   - [x] **first heuristic**: this heuristic takes advantage of the fact that the cost of every move ranges between \[1,2)
   ```
   h = number of characters in the current state
   ```
-  - [x] **second heuristic**: this heuristic works because it gives a cost in between the first heuristic and the cost of removing each individual xone on its own.
+  In the best case scenario we will be able to move the characters in such a way that we eliminate all the characters of one type in one move. This heuristic assumes that we will be able to do that for every state, and calculates the cost of this best case scenario.
+  - [x] **second heuristic**: this heuristic works because it estimates haow fragmented the matrix is. 
   ```
   h = 1 - K/N, where N is the number of characters of the type we are removing and K is the number of characters we are removing through this move. 
+  ```
+  Let's prove that this heuristic is valid.
+  ```
+  Suppose we have a matrix of n rows and m columns.
+  The matrix contains c characters.
+  The number of characters for each character is p_i, where i is the index of the character. Obviously, p_1+p_2 +...+ p_c = n*m
+  Each character has f_i fragments, where i is the index of the character.
+  Each fragment has size s_i_j, where i is the index od the character and j is the index of the fragment.
+  Following this heuristing, the estimated cost for this matrix is: 
+  - 1-s_1_1/p_1 + 1-s_1_2/p_1 + ... + 1-s_1_(f_1)/p_1 for character 1. We know that s_1_1 + s_1_2 + ... + s_1_(f_1) = p_1
+    so the final cost is f_1 -1
+  - the final cost for character2 is f_2 -1
+  - same for the rest of them
+  So, the final estimated cost is f_1 + f_2 + ... + f_c - c.
   ```
   - [x] **invalid heuristic**: this heuristic assumes that we remove each zone on its won, without moving the characters    
   ```
@@ -43,7 +59,7 @@ python m.py Inputs Outputs 10 60
   - [x] maximum number of nodes generated at any point in time
   - [x] total number of nodes generated 
 - [x] validations:
-  - [ ] checking if input data is correct
+  - [x] checking if input data is correct
   - [x] checking if a state could result in a goal state or not
 - [x] table
 
@@ -87,3 +103,4 @@ python m.py Inputs Outputs 10 60
 - A good heuristic can improve the cost of the first solution by 50% (A* invalid heuristic vs A* second heuristic).
 - IDA* seems to be the most consistent at finding the minimum possible cost, although it takes the longest time to do so and generates the most nodes. For the other algorithms, they rarely find the best solution first. 
 - When comparing A* with optimized A*, we can see consistent better results for optimized A* whilst the running times for both of them are comparable.
+- Because the simple heuristic is valid and always has value 1, it leaves the final say in which node gets expanded to g, aka the cost from start to current node. Because the cost of a move tends to favor moves that remove as many characters of one type as possible, algorithms using the simple heuristic still get pretty good results.
