@@ -1,15 +1,18 @@
-from NodParcurgere import NodParcurgere
-from helpers import mapeaza_caractere, identifica_blocuri, refactor
+from NodParcurgere import Node
+from helpers import map_characters, identify_zones, refactor
 import copy
 
 
-class Graph:  # graful problemei
-    def __init__(self, nume_fisier, out):
-        def construiesteStare(sir, out):
+class Graph:
+    def __init__(self, file_name, out):
+        """
+        Initializes a graph.
+        """
+        def build_configuration(sir, out):
             sir.strip()
             sir=sir.split("\n")
             n = 0
-            matrice = []
+            matrix = []
             if sir == []:
                 out.write("Invalid input file.")
                 print("Invalid input file.")
@@ -24,86 +27,93 @@ class Graph:  # graful problemei
                 a = []
                 for x in linie:
                     a.append(x)
-                matrice.append(a)
-            return matrice
+                matrix.append(a)
+            return matrix
 
-        f = open(nume_fisier, "r")
+        f = open(file_name, "r")
         self.k = int(f.readline())
-        continut_fisier = f.read()
-        self.start = construiesteStare(continut_fisier, out)
+        file_contents = f.read()
+        self.start = build_configuration(file_contents, out)
 
-    def testeaza_scop(self, nodCurent):
-        for linie in nodCurent.info:
+    def test_goal(self, current_node):
+        """
+        Tests if a given node has reached the goal.
+        """
+        for linie in current_node.info:
             for x in linie:
                 if x!='#':
                     return False
         return True
 
-    def testeaza_scop_info(self, infoNod):
-        for linie in infoNod:
+    def test_goal_info(self, node_info):
+        """
+        Tests if a given configuration has reached the goal.
+        """
+        for linie in node_info:
             for x in linie:
                 if x!='#':
                     return False
         return True
 
-    # va genera succesorii sub forma de noduri in arborele de parcurgere
 
-    def genereazaSuccesori(self, nodCurent, tip_euristica="euristica banala"):
-        listaSuccesori = []
-        # itdentifica toate "blocurile" din aceasta matrice si le pune in lista_blocuri
-        ch_number = mapeaza_caractere(nodCurent.info)
-        lista_blocuri=identifica_blocuri(nodCurent.info)
-        for bloc in lista_blocuri:
+    def generate_successors(self, current_node, heuristic="simple heuristic"):
+        """
+        Generates immediate successors from a given state.
+        """
+        successors = []
+        ch_number = map_characters(current_node.info)
+        zones=identify_zones(current_node.info)
+        for bloc in zones:
             if len(bloc) >= self.k:
-                copie = copy.deepcopy(nodCurent.info)
+                copie = copy.deepcopy(current_node.info)
                 for tuplu in bloc:
                     x = tuplu[0]
                     y = tuplu[1]
                     copie[x][y] = '#'
 
-                caracterul_eliminat = nodCurent.info[bloc[0][0]][bloc[0][1]]
+                caracterul_eliminat = current_node.info[bloc[0][0]][bloc[0][1]]
                 nr_caractere_de_tipul_celui_eliminat = ch_number[caracterul_eliminat]
-                cost = 1+(nr_caractere_de_tipul_celui_eliminat-len(bloc))/nr_caractere_de_tipul_celui_eliminat + nodCurent.g
+                cost = 1+(nr_caractere_de_tipul_celui_eliminat-len(bloc))/nr_caractere_de_tipul_celui_eliminat + current_node.g
                 copie=refactor(copie)
-                nodGenerat = NodParcurgere(copie, nodCurent, cost, self.calculeaza_h(copie, tip_euristica), bloc, caracterul_eliminat)
-                if nodGenerat.situatie_invalida(self.k) == False or self.testeaza_scop(nodGenerat):
-                    listaSuccesori.append(nodGenerat)
-        return listaSuccesori
+                nodGenerat = Node(copie, current_node, cost, self.estimate_h(copie, heuristic), bloc, caracterul_eliminat)
+                if nodGenerat.invalid_configuration(self.k) == False or self.test_goal(nodGenerat):
+                    successors.append(nodGenerat)
+        return successors
 
-    # euristica banala
-    def calculeaza_h(self, infoNod, tip_euristica="euristica banala"):
-        if tip_euristica=="euristica banala":
-            if self.testeaza_scop_info(infoNod) ==True:
+    def estimate_h(self, node_info, heuristic="simple heuristic"):
+        """
+        Estimates h for a given heuristic and a given configuration.
+        """
+        if heuristic=="simple heuristic":
+            if self.test_goal_info(node_info):
                 return 0
             else:
                 return 1
-        elif tip_euristica=="euristica1":       # adaug 1 pentru fiecare caracter
-            return len(mapeaza_caractere(infoNod).keys())
-        elif tip_euristica=="euristica2":
-            lista_blocuri = identifica_blocuri(infoNod)
-            nr_blocuri = len(lista_blocuri)
-            ch_number = mapeaza_caractere(infoNod)
+        elif heuristic == "first heuristic":       # adaug 1 pentru fiecare caracter
+            return len(map_characters(node_info).keys())
+        elif heuristic == "second heuristic":
+            zones = identify_zones(node_info)
+            nr_zones = len(zones)
+            ch_number = map_characters(node_info)
 
-            if nr_blocuri==0:
+            if nr_zones==0:
                 return 0
             cost = 0
-            for bloc in lista_blocuri:
-                ch = infoNod[bloc[0][0]][bloc[0][1]]
-                cost+= 1 - len(bloc)/ch_number[ch]
-
-
+            for bloc in zones:
+                ch = node_info[bloc[0][0]][bloc[0][1]]
+                cost += 1 - len(bloc)/ch_number[ch]
             return cost
-        elif tip_euristica=="neadmisibila":
 
-            lista_blocuri = identifica_blocuri(infoNod)
-            nr_blocuri = len(lista_blocuri)
-            ch_number = mapeaza_caractere(infoNod)
+        elif heuristic == "invalid":
+            zones = identify_zones(node_info)
+            nr_zones = len(zones)
+            ch_number = map_characters(node_info)
 
-            if nr_blocuri == 0:
+            if nr_zones == 0:
                 return 0
             cost = 0
-            for bloc in lista_blocuri:
-                ch = infoNod[bloc[0][0]][bloc[0][1]]
+            for bloc in zones:
+                ch = node_info[bloc[0][0]][bloc[0][1]]
                 cost += 1 + (ch_number[ch]-len(bloc)) / ch_number[ch]
             return cost
 

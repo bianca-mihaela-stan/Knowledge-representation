@@ -1,9 +1,12 @@
 import copy
 
-def mapeaza_caractere(infoNod):
+def map_characters(node_info):
+    """
+    Maps every character to the number of each character on the board.
+    """
     ch_number = {}
-    for linie in infoNod:
-        for ch in linie:
+    for line in node_info:
+        for ch in line:
             if ch in ch_number.keys():
                 ch_number[ch] += 1
             else:
@@ -11,51 +14,60 @@ def mapeaza_caractere(infoNod):
     return ch_number
 
 
-def identifica_bloc(infoNod, x, y, viz, elemente_in_bloc):
+def identify_zone(node_info, x, y, viz, elements_in_zone):
+    """
+    Identifies the zone around character at position (x,y).
+    """
     viz[x][y] = 1
-    elemente_in_bloc.append((x, y))
-    if x > 0 and infoNod[x][y] == infoNod[x - 1][y] and viz[x - 1][y] == 0 and infoNod[x][y] != '#':
-        identifica_bloc(infoNod, x - 1, y, viz, elemente_in_bloc)
-    if y > 0 and infoNod[x][y] == infoNod[x][y - 1] and viz[x][y - 1] == 0 and infoNod[x][y] != '#':
-        identifica_bloc(infoNod, x, y - 1, viz, elemente_in_bloc)
-    if x < len(infoNod) - 1 and infoNod[x][y] == infoNod[x + 1][y] and viz[x + 1][y] == 0 and infoNod[x][y] != '#':
-        identifica_bloc(infoNod, x + 1, y, viz, elemente_in_bloc)
-    if y < len(infoNod[0]) - 1 and infoNod[x][y] == infoNod[x][y + 1] and viz[x][y + 1] == 0 and infoNod[x][y] != '#':
-        identifica_bloc(infoNod, x, y + 1, viz, elemente_in_bloc)
+    elements_in_zone.append((x, y))
+    if x > 0 and node_info[x][y] == node_info[x - 1][y] and viz[x - 1][y] == 0 and node_info[x][y] != '#':
+        identify_zone(node_info, x - 1, y, viz, elements_in_zone)
+    if y > 0 and node_info[x][y] == node_info[x][y - 1] and viz[x][y - 1] == 0 and node_info[x][y] != '#':
+        identify_zone(node_info, x, y - 1, viz, elements_in_zone)
+    if x < len(node_info) - 1 and node_info[x][y] == node_info[x + 1][y] and viz[x + 1][y] == 0 and node_info[x][y] != '#':
+        identify_zone(node_info, x + 1, y, viz, elements_in_zone)
+    if y < len(node_info[0]) - 1 and node_info[x][y] == node_info[x][y + 1] and viz[x][y + 1] == 0 and node_info[x][y] != '#':
+        identify_zone(node_info, x, y + 1, viz, elements_in_zone)
 
-def identifica_blocuri(infoNod):
-    viz = [[0 for _ in range(len(infoNod[0]))] for _ in range(len(infoNod))]
-    lista_blocuri = []
-    for i in range(len(infoNod)):
-        for j in range(len(infoNod[i])):
-            if viz[i][j] == 0 and infoNod[i][j]!='#':
-                elemente_in_bloc = []
-                identifica_bloc(infoNod, i, j, viz, elemente_in_bloc)
-                lista_blocuri.append(elemente_in_bloc)
-    return lista_blocuri
+def identify_zones(node_info):
+    """
+    Identifies distinct zones on the board.
+    """
+    viz = [[0 for _ in range(len(node_info[0]))] for _ in range(len(node_info))]
+    zones = []
+    for i in range(len(node_info)):
+        for j in range(len(node_info[i])):
+            if viz[i][j] == 0 and node_info[i][j]!='#':
+                elements_in_zone = []
+                identify_zone(node_info, i, j, viz, elements_in_zone)
+                zones.append(elements_in_zone)
+    return zones
 
-def refactor(infoNod):
-    #caderea
-    for x in range(len(infoNod)-1, -1, -1):
-        for y in range(len(infoNod[x])-1, -1, -1):
+def refactor(node_info):
+    """
+    Refactoring the board after every move.
+    """
+    # the fall
+    for x in range(len(node_info)-1, -1, -1):
+        for y in range(len(node_info[x])-1, -1, -1):
             x_copy = copy.deepcopy(x)
             y_copy = copy.deepcopy(y)
             z = x_copy+1
-            while z<=len(infoNod)-1 and infoNod[x_copy][y_copy]!='#' and infoNod[z][y_copy]=='#':
-                infoNod[z][y_copy] = infoNod[x_copy][y_copy]
-                infoNod[x_copy][y_copy] = '#'
+            while z<=len(node_info)-1 and node_info[x_copy][y_copy]!='#' and node_info[z][y_copy]=='#':
+                node_info[z][y_copy] = node_info[x_copy][y_copy]
+                node_info[x_copy][y_copy] = '#'
                 x_copy+=1
                 z+=1
-    #shiftarea la dreapta
-    for x in range(len(infoNod)):
-        for y in range(len(infoNod[x])):
+    # the right shift
+    for x in range(len(node_info)):
+        for y in range(len(node_info[x])):
             x_copy = copy.deepcopy(x)
             y_copy = copy.deepcopy(y)
             z = y-1
-            while z>=0 and infoNod[x_copy][y_copy]!='#' and infoNod[x_copy][z]=='#':
-                infoNod[x_copy][z]=infoNod[x_copy][y_copy]
-                infoNod[x_copy][y_copy]='#'
+            while z>=0 and node_info[x_copy][y_copy]!='#' and node_info[x_copy][z]=='#':
+                node_info[x_copy][z]=node_info[x_copy][y_copy]
+                node_info[x_copy][y_copy]='#'
                 y_copy-=1
                 z-=1
 
-    return infoNod
+    return node_info
