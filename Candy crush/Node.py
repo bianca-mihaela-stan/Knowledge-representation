@@ -59,7 +59,7 @@ class Node:
         out.write("Maximum number of nodes: " + str(max_noduri) + "<br>")
         out.write("Total number of nodes: " + str(total_noduri)+ "<br>")
 
-    def contineInDrum(self, infoNodNou):
+    def contains_in_path(self, infoNodNou):
         """
         Returns if a certain configuration was encountered on the path from the start node to the current node.
         """
@@ -103,6 +103,10 @@ class Node:
     def invalid_configuration(self, k):
         """
         Checks if a node cannot result in a goal configuration.
+        Params:
+            k (int) : minimum number of characters for a zone, as given in the command line.
+        Returns:
+            (bool) : True if the configuration is invalid, False if it is valid
         """
         no_zone = True
         insufficient_character = False

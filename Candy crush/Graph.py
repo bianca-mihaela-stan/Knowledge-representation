@@ -1,4 +1,4 @@
-from NodParcurgere import Node
+from Node import Node
 from helpers import map_characters, identify_zones, refactor
 import copy
 
@@ -83,6 +83,11 @@ class Graph:
     def estimate_h(self, node_info, heuristic="simple heuristic"):
         """
         Estimates h for a given heuristic and a given configuration.
+        Args:
+            node_info (list(list(char))): A configuration of the board
+            heuristic (string): the name of the heuristic used
+        Returns:
+            (list(list(tuple)): A list lists of elements in every zone.
         """
         if heuristic=="simple heuristic":
             if self.test_goal_info(node_info):

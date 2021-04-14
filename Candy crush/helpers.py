@@ -3,6 +3,10 @@ import copy
 def map_characters(node_info):
     """
     Maps every character to the number of each character on the board.
+    Args:
+        node_info list(list(char)): A configuration of the board
+    Returns:
+          dictionary of chars to ints: ch_number[x] = number of instances of x in the board
     """
     ch_number = {}
     for line in node_info:
@@ -17,6 +21,14 @@ def map_characters(node_info):
 def identify_zone(node_info, x, y, viz, elements_in_zone):
     """
     Identifies the zone around character at position (x,y).
+     Args:
+        node_info (list(list(char))): A configuration of the board
+        x (int): index of line of element
+        y (int): index of column of element
+        viz (list(list(int))): a matrix that marks whether we counted a character or not
+        elements_in_zone (list(tuple)): a list with the positions all the elements in identified zone
+    Returns:
+          dictionary of chars to ints: ch_number[x] = number of instances of x in the board
     """
     viz[x][y] = 1
     elements_in_zone.append((x, y))
@@ -32,6 +44,10 @@ def identify_zone(node_info, x, y, viz, elements_in_zone):
 def identify_zones(node_info):
     """
     Identifies distinct zones on the board.
+    Args:
+        node_info list(list(char)): A configuration of the board
+    Returns:
+        (list(list(tuple)): A list lists of elements in every zone.
     """
     viz = [[0 for _ in range(len(node_info[0]))] for _ in range(len(node_info))]
     zones = []
@@ -46,6 +62,10 @@ def identify_zones(node_info):
 def refactor(node_info):
     """
     Refactoring the board after every move.
+     Args:
+        node_info list(list(char)): A configuration of the board
+    Returns:
+        list(list(char)): A new configuration of the board
     """
     # the fall
     for x in range(len(node_info)-1, -1, -1):

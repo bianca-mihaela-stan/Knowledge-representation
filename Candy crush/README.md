@@ -24,7 +24,7 @@ python m.py Inputs Outputs 10 60
   h = 1 - K/N, where N is the number of characters of the type we are removing and K is the number of characters we are removing through this move. 
   ```
   Let's prove that this heuristic is valid.
-  ```
+  ````
   Suppose we have a matrix of n rows and m columns.
   The matrix contains c characters.
   The number of characters for each character is p_i, where i is the index of the character. Obviously, p_1+p_2 +...+ p_c = n*m
@@ -36,18 +36,29 @@ python m.py Inputs Outputs 10 60
   - the final cost for character2 is f_2 -1
   - same for the rest of them
   So, the final estimated cost is f_1 + f_2 + ... + f_c - c.
-  ```
+  ````
   - [x] **invalid heuristic**: this heuristic assumes that we remove each zone on its won, without moving the characters    
   ```
   h = 1 + (N-K)/N,  where N is the number of characters of the type we are removing and K is the number of characters we are removing through this move. 
   ```
+  Lets' prove that it's invalid:
+  ```` 
+                               optimal solution       
+  aaa                          aaa                ###                ###
+  bbb                          bbb  => cost 1 =>  aaa  => cost 1 =>  ###
+  aaa                          aaa                aaa                ###
+  estimated h:                 optimal solution cost:
+  2-1/2 + 1 + 2-1/2 = 4            2
+  
+  4 > 2
+  ````
 - [x] input files: 
   - [x] a file with no solutions:
   - [x] a file where the initial state is also final
   - [x] a file with small solution lengths
-  - [x] a file that timeouts an algorithm: `input4.in` timeouts on Iterative deepening A* when timeOut is set to 6s, but gives a solution for every other algorithm.
+  - [x] a file that timeouts an algorithm: `input4.in` timeouts on Iterative deepening A\* when timeOut is set to 6s, but gives a solution for every other algorithm.
   - [x] at least one of these files should result in a subobtimal result for the invalid heuristic
-    | optimized A* with second heuristic | optimized A* with invalid heuristic |
+    | optimized A\* with second heuristic | optimized A\* with invalid heuristic |
     | - | - |
     | 5 | 12.83 |
 

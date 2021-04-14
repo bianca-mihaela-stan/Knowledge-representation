@@ -3,7 +3,7 @@ from heapq import heappush, heapify, heappop
 import sys
 import os
 import time
-from NodParcurgere import Node
+from Node import Node
 from Graph import Graph
 from helpers import refactor
 
