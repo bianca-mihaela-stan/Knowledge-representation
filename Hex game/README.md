@@ -1,0 +1,21 @@
+# Features
+- [ ] Ability to choose between min-max and alpha-betha.
+- [ ] Ability to choose color.
+- [ ] Displaying player's turn.
+- [ ] Showing winner.
+- [ ] Difficulty levels.
+- [ ] Generating initial state.
+- [x] GUI + CLI
+- [ ] Generating successors.
+- [x] Handling user moves.
+- [x] Testing for goal state.
+- [ ] Two estimation for cost:
+  - [ ] Estimation 1
+  - [ ] Estimation 2
+- [ ] Printing thinking time for both user and computer.
+- [ ] Printing the minimum, maximum, median and medial thinking time for the computer.
+- [ ] Printing the estimation after the computer moves.
+- [ ] Printing the number of generated nodes for each move.
+- [ ] Printing the minimum, maximum, median and medial number of generated nodes for each move.
+- [ ] Printing the total running time of the game and the total number of moves.
+- [ ] Option to stop the game at any point, which if taken, prints the final stats for the current configuration
