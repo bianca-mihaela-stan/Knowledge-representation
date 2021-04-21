@@ -7,6 +7,11 @@ import pygame
 CELL_DIMENSION = 40
 LIN = 11
 COL = 11
+DISPLAY_X = int(COL* CELL_DIMENSION +CELL_DIMENSION*0.5*(LIN-1)+1)
+DISPLAY_Y = CELL_DIMENSION*LIN
+pygame.font.init()
+FONT = pygame.font.Font('freesansbold.ttf', 32)
+GAME_H_OFFSET = 50
 
 class State:
     def __init__(self, col, lin, display, input_file = None):
@@ -102,33 +107,165 @@ def DFS(state, x, y, final_x, final_y, viz):
         elif state.matrix[x+1][y]==current and x+1<state.lin and viz[x+1][y]==False:
             return DFS(state, x+1, y, final_x, final_y, viz)
 
-pygame.init()
-pygame.display.set_caption('Hex game')
-screen = pygame.display.set_mode(size=(int(COL* CELL_DIMENSION +CELL_DIMENSION*0.5*(LIN-1)+1), CELL_DIMENSION*LIN))
-current_state = State(11, 11, screen, "input.txt")
-switch=1
 
-while True :
-    current_state.draw()
+def min_max(state, player, estimation, depth):
+    '''
+        Min-Max algorithm.
+    '''
 
-    final = current_state.is_final();
-    if final!=0:
-        print(f"A castigat jucatorul {final}")
-        pygame.quit()
-        sys.exit(0)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    return
+
+
+def game_loop(current_state, players, algorithm_choices, estimation_choices, difficulty_choices):
+    switch = 1
+    current_player = 0
+    algorithms = [min_max, alpha_betha]
+    estimations = ["estimation 1", "estimation 2"]
+    difficulties = [1, 3, 5]
+
+    while True:
+        current_state.draw()
+
+        final = current_state.is_final()
+        if final != 0:
+            print(f"A castigat jucatorul {final}")
             pygame.quit()
             sys.exit(0)
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
 
-            # Calculating the cell the player clicked on based on the position of the mouse.
-            cell_x = pos[1]//CELL_DIMENSION
-            cell_y = (pos[0]//(CELL_DIMENSION // 2) - cell_x ) // 2
-            print(f"Player attempted a move {cell_x} {cell_y}.")
+        if players[current_player]==1:
+            algorithms[algorithm_choices[current_player]](estimations[estimation_choices[current_player]],
+                                                          difficulties[difficulty_choices[current_player]])
 
-            if cell_x<current_state.lin and cell_y<current_state.col and current_state.matrix[cell_x][cell_y]==-1:
-                current_state.matrix[cell_x][cell_y]=switch
-                switch=3-switch
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+
+                # Calculating the cell the player clicked on based on the position of the mouse.
+                cell_x = pos[1] // CELL_DIMENSION
+                cell_y = (pos[0] // (CELL_DIMENSION // 2) - cell_x) // 2
+                print(f"Player attempted a move {cell_x} {cell_y}.")
+
+                if cell_x < current_state.lin and cell_y < current_state.col and current_state.matrix[cell_x][
+                    cell_y] == -1:
+                    current_state.matrix[cell_x][cell_y] = switch
+                    switch = 3 - switch
+
+
+def print_title_on_display(content, display):
+    '''
+        Prints a given title on the display.
+    '''
+    text = FONT.render(content, True, (50, 50, 50))
+    text_rect = text.get_rect()
+    text_rect.center = (DISPLAY_X//2, DISPLAY_Y//12)
+    display.blit(text, text_rect)
+
+def display_question(question, answers, display):
+    display.fill((230, 255, 215))
+
+    print_title_on_display(question, display)
+
+    X = len(answers)
+    Y = len(answers[0])
+    display_x = DISPLAY_X
+    display_y = DISPLAY_Y
+    display_y-= GAME_H_OFFSET
+
+    for i in range(X):
+        for j in range(Y):
+            rect = pygame.Rect(
+                int(display_x / X * i) + 3,
+                int(display_y / Y * j) + GAME_H_OFFSET + 3,
+                int(display_x / X - 6),
+                int(display_y / Y - 6)
+            )
+            pygame.draw.rect(display, (100, 100, 100), rect, width=4, border_radius=6)
+
+            center_x = int(display_x / X * i + (display_x / X / 2))
+            center_y = GAME_H_OFFSET + int(display_y / Y * j + (display_y / Y / 2))
+            text = FONT.render(answers[i][j], True, (20, 20, 20))
+            text_rect = text.get_rect()
+            text_rect.center = (center_x, center_y)
+            display.blit(text, text_rect)
+
+    pygame.display.flip()
+
+    while True:
+        # Loop through the events of the game.
+        for event in pygame.event.get():
+            # Quit.
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            # Something was pressed.
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                # Check if a move was made, and if yes acknowledge it.
+                pos = (pos[0], pos[1] - GAME_H_OFFSET)
+
+                choice = (int(pos[0] / (display_x / X)), int(pos[1] / (display_y / Y)))
+                return choice[1]
+
+
+def main():
+    global DISPLAY_X, DISPLAY_Y
+    pygame.init()
+    pygame.display.set_caption('Hex game')
+    screen = pygame.display.set_mode(size=(DISPLAY_X, DISPLAY_Y))
+
+    player_1 = None
+    player_2 = None
+    estimation_1 = None
+    estimation_2 = None
+    algorithm_1 = None
+    algorithm_2 = None
+    difficulty_1 = None
+    difficulty_2 = None
+
+    players = [["Human", "PC"]]
+    player_1 = display_question("Player 1", players, screen)
+    print(player_1)
+
+    if player_1!= 0:
+        algorithms = [["Min Max", "Alpha Betha"]]
+        algorithm_1 = display_question("Algorithm to use", algorithms, screen)
+
+        estimations = [["Estimation 1", "Estimation 2"]]
+        estimation_1 = display_question("Estimation to use", estimations, screen)
+        print(estimation_1)
+        screen.fill((230, 255, 215))
+
+        difficulty = [["Easy", "Medium", "Hard"]]
+        difficulty_1 = display_question("Difficulty", difficulty, screen)
+        print(difficulty_1)
+
+    player_2 = display_question("Player 2", players, screen)
+    print(player_2)
+
+    if player_2 != 0:
+        algorithms = [["Min Max", "Alpha Betha"]]
+        algorithm_2 = display_question("Algorithm to use", algorithms, screen)
+
+        estimations = [["Estimation 1", "Estimation 2"]]
+        estimation_2 = display_question("Estimation to use", estimations, screen)
+        print(estimation_2)
+        screen.fill((230, 255, 215))
+
+        difficulty = [["Easy", "Medium", "Hard"]]
+        difficulty_2 = display_question("Difficulty", difficulty, screen)
+        print(difficulty_2)
+
+    players = [player_1, player_2]
+    algorithms = [algorithm_1, algorithm_2]
+    estimations = [estimation_1, estimation_2]
+    difficulties = [difficulty_1, difficulty_2]
+    current_state = State(11, 11, screen, "input.txt")
+    game_loop(current_state, players, algorithms, estimations, difficulties)
+
+if __name__ == '__main__':
+    main()
