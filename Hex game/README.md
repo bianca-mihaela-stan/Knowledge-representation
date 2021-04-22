@@ -1,10 +1,10 @@
 # Features
-- [ ] Ability to choose between min-max and alpha-betha.
-- [ ] Ability to choose color.
+- [x] Ability to choose between min-max and alpha-betha.
+- [x] Ability to choose color.
 - [ ] Displaying player's turn.
 - [ ] Showing winner.
-- [ ] Difficulty levels.
-- [ ] Generating initial state.
+- [x] Difficulty levels.
+- [x] Generating initial state.
 - [x] GUI + CLI
 - [ ] Generating successors.
 - [x] Handling user moves.
