@@ -1,6 +1,7 @@
 import copy
 import sys
 import time
+from math import inf
 
 import pygame
 
@@ -17,7 +18,7 @@ class State:
     def __init__(self, col, lin, display, input_file = None):
         self.lin= lin
         self.col=col
-        self.matrix = [[-1 for i in range(lin)] for j in range(col)]
+        self.matrix = [["#" for i in range(lin)] for j in range(col)]
         self.display = display
 
         if input_file!=None:
@@ -25,7 +26,7 @@ class State:
             input = f.read().split("\n")
             matrix = []
             for line in input:
-                matrix.append([ int(x) for x in line.split(" ")])
+                matrix.append([ x for x in line.split(" ")])
             self.matrix = matrix
 
     def show(self):
@@ -34,9 +35,6 @@ class State:
         '''
         for i in range(self.lin):
             for j in range(self.lin):
-                if self.matrix[i][j] == -1:
-                    print("# ", end="")
-                else:
                     print(self.matrix[i][j], end=" ")
             print("\n" + str(" " * i), end="")
 
@@ -45,9 +43,9 @@ class State:
         for i in range(self.lin):
             for j in range(self.col):
                 color = None
-                if self.matrix[i][j] == 1:
+                if self.matrix[i][j] == "a":
                     color = (51, 204, 255)
-                elif self.matrix[i][j] == 2:
+                elif self.matrix[i][j] == "b":
                     color = (255, 80, 80)
                 else:
                     color = (255, 255, 255)
@@ -74,12 +72,12 @@ class State:
 
     def is_final(self):
         for i in range(self.lin):
-            if self.matrix[i][0] != -1:
+            if self.matrix[i][0] != "#":
                 viz = [[False for i in range(self.lin)] for j in range(self.col)]
                 val = DFS(self, i, 0, None, self.col - 1, viz)
                 if val != None:
                     return val
-            elif self.matrix[0][i] != -1:
+            elif self.matrix[0][i] != "#":
                 viz = [[False for i in range(self.lin)] for j in range(self.col)]
                 val = DFS(self, 0, i, self.lin - 1 , None, viz)
                 if val != None:
@@ -94,33 +92,58 @@ def DFS(state, x, y, final_x, final_y, viz):
             return state.matrix[x][y]        # returns the player that won
 
         current = state.matrix[x][y]
-        if state.matrix[x-1][y]==current and x-1>=0 and viz[x-1][y]==False:
+        if x-1>=0 and viz[x-1][y]==False and state.matrix[x-1][y]==current:
             return DFS(state, x-1, y, final_x, final_y, viz)
-        elif state.matrix[x-1][y+1]==current  and x-1>=0 and y+1<state.col and viz[x-1][y+1]==False:
+        elif x-1>=0 and y+1<state.col and viz[x-1][y+1]==False and state.matrix[x-1][y+1]==current:
             return DFS(state, x-1, y+1, final_x, final_y, viz)
-        elif state.matrix[x][y-1]==current and y-1>=0 and viz[x][y-1]==False:
+        elif y-1>=0 and viz[x][y-1]==False and state.matrix[x][y-1]==current:
             return DFS(state, x, y-1, final_x, final_y, viz)
-        elif state.matrix[x][y+1]==current and y+1<state.col and viz[x][y+1]==False:
+        elif y+1<state.col and viz[x][y+1]==False and state.matrix[x][y+1]==current:
             return DFS(state, x, y+1, final_x, final_y, viz)
-        elif state.matrix[x+1][y-1]==current and x+1<state.lin and y-1>=0 and viz[x+1][y-1]==False:
+        elif x+1<state.lin and y-1>=0 and viz[x+1][y-1]==False and state.matrix[x+1][y-1]==current:
             return DFS(state, x, y-1, final_x, final_y, viz)
-        elif state.matrix[x+1][y]==current and x+1<state.lin and viz[x+1][y]==False:
+        elif x+1<state.lin and viz[x+1][y]==False and state.matrix[x+1][y]==current:
             return DFS(state, x+1, y, final_x, final_y, viz)
 
 
-def min_max(state, player, estimation, depth):
-    '''
-        Min-Max algorithm.
-    '''
+def generate_successors(state, player):
+    successors = []
+    for i in range(state.lin):
+        for j in range(state.col):
+            if state.matrix[i][j]=="#":
+                new_state = state.create_copy()
+                new_state[i][j]= player
+                successors.append(new_state)
+
+    return successors
+
+def estimate_state(state, estimation_type):
+    lee_matrix = [[+inf for i in range(state.lin)] for j in range(state.col)]
+    if estimation_type=="estimation 2":
+        for i in range(state.lin):
+            for j in range (state.col):
+                if
 
 
-    return
+def min(state, player):
+    print(f"Player {player} minimizes")
 
+
+
+def valid_choice(current_state, cell_x, cell_y):
+    return cell_x < current_state.lin and \
+           cell_y < current_state.col and \
+           current_state.matrix[cell_x][cell_y] == "#"
+
+def switch(current_symbol):
+    if current_symbol=="a":
+        return "b"
+    return "a"
 
 def game_loop(current_state, players, algorithm_choices, estimation_choices, difficulty_choices):
-    switch = 1
+    current_symbol = "a"
     current_player = 0
-    algorithms = [min_max, alpha_betha]
+    # algorithms = [min_max, alpha_betha]
     estimations = ["estimation 1", "estimation 2"]
     difficulties = [1, 3, 5]
 
@@ -133,9 +156,9 @@ def game_loop(current_state, players, algorithm_choices, estimation_choices, dif
             pygame.quit()
             sys.exit(0)
 
-        if players[current_player]==1:
-            algorithms[algorithm_choices[current_player]](estimations[estimation_choices[current_player]],
-                                                          difficulties[difficulty_choices[current_player]])
+        # if players[current_player]==1:
+        #     algorithms[algorithm_choices[current_player]](estimations[estimation_choices[current_player]],
+        #                                                   difficulties[difficulty_choices[current_player]])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,10 +172,9 @@ def game_loop(current_state, players, algorithm_choices, estimation_choices, dif
                 cell_y = (pos[0] // (CELL_DIMENSION // 2) - cell_x) // 2
                 print(f"Player attempted a move {cell_x} {cell_y}.")
 
-                if cell_x < current_state.lin and cell_y < current_state.col and current_state.matrix[cell_x][
-                    cell_y] == -1:
-                    current_state.matrix[cell_x][cell_y] = switch
-                    switch = 3 - switch
+                if valid_choice(current_state, cell_x, cell_y):
+                    current_state.matrix[cell_x][cell_y] = current_symbol
+                    current_symbol = switch(current_symbol)
 
 
 def print_title_on_display(content, display):
