@@ -1,4 +1,4 @@
-## Features
+## Candy crush 🍭
 - [x] Input files are given in the command line, through a path to a designated directory. Same for the output directory and the number of solutions. The command line also specifies the tiomeout.
 ```
 python m.py Inputs Outputs 10 60
