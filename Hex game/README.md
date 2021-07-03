@@ -1,4 +1,4 @@
-# Features
+# Hex game ⬡⬢
 - [x] Ability to choose between min-max and alpha-betha.
 - [x] Ability to choose color.
 - [x] Displaying player's turn.
